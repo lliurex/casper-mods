@@ -1,0 +1,55 @@
+#!/bin/sh
+
+PREREQ=""
+DESCRIPTION="Fixed autologin on livecds "
+
+prereqs()
+{
+    echo "$PREREQ"
+}
+
+case $1 in
+# get pre-requisites
+prereqs)
+       prereqs
+       exit 0
+       ;;
+esac
+
+. /scripts/casper-functions
+
+log_begin_msg "$DESCRIPTION"
+
+# Only in casper mode
+rc=0
+cat /proc/cmdline | grep -q "casper" ||rc=1
+if [ ${rc} -eq 0 ]; then
+
+	echo "[Autologin]" > /root/etc/sddm.conf.d/autologin.conf
+	echo "User=lliurex"  >> /root/etc/sddm.conf.d/autologin.conf
+	echo "Session=plasma.desktop"  >> /root/etc/sddm.conf.d/autologin.conf
+
+#
+#               Replace this code by kde settings
+#
+#		rm -rf /root/usr/share/gconf/schemas/*
+#		rm -f /root/usr/share/gconf/defaults/10_libgnome2-common
+#		rm -f /root/usr/share/gconf/defaults/10_libgnome2vfs2-common
+#		touch /root/root/casper.remove.schemas
+
+#	if [ -x /root/usr/bin/xdg_translator ]; then
+#		echo '#!/bin/sh' > /root/etc/lightdm/PreSession.d/ubiquity_fixer
+#		echo 'CURRENT_DESKTOP_FOLDER=$(/usr/bin/xdg_translator "$LANG" "Desktop")' >> /root/etc/lightdm/PreSession.d/ubiquity_fixer
+#		echo 'cp -f /usr/share/applications/ubiqu*.desktop /home/lliurex/$CURRENT_DESKTOP_FOLDER' >> /root/etc/lightdm/PreSession.d/ubiquity_fixer
+#		echo 'chown lliurex:lliurex /home/lliurex/$CURRENT_DESKTOP_FOLDER/ubiqu*desktop' >> /root/etc/lightdm/PreSession.d/ubiquity_fixer
+#		echo 'chmod +x /home/lliurex/$CURRENT_DESKTOP_FOLDER/ubiqu*desktop' >> /root/etc/lightdm/PreSession.d/ubiquity_fixer
+#		echo 'exit 0' >> /root/etc/lightdm/PreSession.d/ubiquity_fixer
+#		chmod +x /root/etc/lightdm/PreSession.d/ubiquity_fixer
+#	fi
+
+else
+	echo " Disabled (not in casper)"
+fi
+
+
+log_end_msg
